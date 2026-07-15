@@ -1,5 +1,5 @@
 <template>
-  <footer class="ml-[240px] mt-auto p-4 text-center text-label-sm font-label-sm text-on-surface-variant/80 border-t border-surface-variant">
-    © 2026 Smart Repositori TA Admin
+  <footer class="h-16 px-margin-desktop flex items-center justify-between text-on-surface-variant/50 border-t border-surface-container-low">
+    <p class="text-label-sm font-label-sm">© 2026 Smart Repositori TA - Internal Admin Panel</p>
   </footer>
 </template>

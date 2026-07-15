@@ -30,6 +30,11 @@ const router = createRouter({
       name: 'admin-dashboard',
       component: AdminDashboard,
     },
+    {
+      path: '/admin/add',
+      name: 'admin-add',
+      component: () => import('../views/admin/AddThesis.vue'),
+    },
   ],
 })
 

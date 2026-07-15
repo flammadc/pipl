@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
+import AdminFooter from '@/components/admin/footer.vue'
 
 const showBars = ref(false)
 
@@ -59,10 +60,10 @@ onMounted(() => {
           <h2 class="font-headline-md text-headline-md font-bold text-primary">Dashboard</h2>
         </div>
         <div class="flex items-center gap-6">
-          <button class="bg-primary text-white px-5 py-2.5 rounded-xl font-label-md text-label-md flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-sm">
+          <router-link to="/admin/add" class="bg-primary text-white px-5 py-2.5 rounded-xl font-label-md text-label-md flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-sm">
             <span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
             Tambah Skripsi
-          </button>
+          </router-link>
           <div class="h-8 w-[1px] bg-outline-variant/30"></div>
           <div class="flex items-center gap-4">
             <button class="text-on-surface-variant hover:text-primary transition-colors">
@@ -399,6 +400,9 @@ onMounted(() => {
           </div>
         </div>
       </div>
+    <AdminFooter />
+
     </main>
+
   </div>
 </template>
