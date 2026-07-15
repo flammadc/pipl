@@ -1,27 +1,32 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 const props = defineProps({
   title: {
     type: String,
-    default: 'Tambah Skripsi'
+    required: true
   },
   showBackButton: {
     type: Boolean,
-    default: true
+    default: false
   },
   showTabs: {
     type: Boolean,
-    default: true
+    default: false
   }
 })
 
 const router = useRouter()
 const route = useRoute()
+const showProfileMenu = ref(false)
 
 const goBack = () => {
-  router.push('/admin')
+  router.back()
+}
+
+const handleLogout = () => {
+  router.push('/login')
 }
 
 const isManual = computed(() => route.path === '/admin/add')
@@ -49,8 +54,18 @@ const isBulk = computed(() => route.path === '/admin/bulk')
       <div class="flex items-center gap-4">
         <span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">notifications</span>
         <span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">help_outline</span>
-        <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden border border-outline-variant">
-          <img class="w-full h-full object-cover" alt="Admin Profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcJo4yiBuUwDkqQFBfL7Cpr3N_3ZrtRHCNSAUhmkI3EwuvuRTkBtSgCfOBEB3vH2ltZ-XsJPIMpabXrUsQnP0RZ0H-_t8XTGsRh5xiNf12BrzOcKfV-0FctTdbt0T0uqKp7N-g77yEb2IfpBUdMGXdubVlgx30h9g1BNj5nqe2TN1ftGlKwdnlIGXAJy-uvoIT5Kr_2dwjaNvMHm1_y6aTr0DezxnaJ5ktiyW32xgfZLPIK9CVZ05ICE9yvhNSj4nVf1wpIaTTfA"/>
+        <div class="relative">
+          <button @click="showProfileMenu = !showProfileMenu" class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden border border-outline-variant focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+            <img class="w-full h-full object-cover" alt="Admin Profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcJo4yiBuUwDkqQFBfL7Cpr3N_3ZrtRHCNSAUhmkI3EwuvuRTkBtSgCfOBEB3vH2ltZ-XsJPIMpabXrUsQnP0RZ0H-_t8XTGsRh5xiNf12BrzOcKfV-0FctTdbt0T0uqKp7N-g77yEb2IfpBUdMGXdubVlgx30h9g1BNj5nqe2TN1ftGlKwdnlIGXAJy-uvoIT5Kr_2dwjaNvMHm1_y6aTr0DezxnaJ5ktiyW32xgfZLPIK9CVZ05ICE9yvhNSj4nVf1wpIaTTfA"/>
+          </button>
+          
+          <!-- Dropdown Menu -->
+          <div v-if="showProfileMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-2 border border-surface-container z-50">
+            <button @click="handleLogout" class="w-full text-left px-4 py-2 hover:bg-surface-container-low text-error flex items-center gap-2 font-label-md transition-colors">
+              <span class="material-symbols-outlined text-[20px]">logout</span>
+              Keluar
+            </button>
+          </div>
         </div>
       </div>
     </div>

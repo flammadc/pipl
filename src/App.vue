@@ -7,6 +7,9 @@ import MahasiswaLayout from '@/layouts/MahasiswaLayout.vue'
 const route = useRoute()
 
 const layout = computed(() => {
+  if (route.path === '/login') {
+    return 'div'
+  }
   if (route.path.startsWith('/admin')) {
     return AdminLayout
   }
