@@ -7,7 +7,7 @@ const router = useRouter()
 
 <template>
       <!-- TopAppBar -->
-      <AdminTopbar title="Tambah Skripsi Massal" />
+      <AdminTopbar title="Tambah Skripsi Massal" :show-tabs="true" :show-back-button="true" />
 
       <!-- Page Content -->
       <div class="flex-grow p-margin-desktop overflow-y-auto">

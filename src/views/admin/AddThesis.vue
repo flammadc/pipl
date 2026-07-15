@@ -37,7 +37,7 @@ const onDrop = (e) => {
 
 <template>
     <!-- TopAppBar Shell -->
-      <AdminTopbar title="Tambah Skripsi Baru" />
+      <AdminTopbar title="Tambah Skripsi Baru" :show-tabs="true" :show-back-button="true" />
 
       <!-- Form Content Container -->
       <div class="flex-grow p-margin-desktop overflow-y-auto">
