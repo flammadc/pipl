@@ -1,19 +1,11 @@
 <script setup>
 import { useRouter } from 'vue-router'
-import AdminFooter from '@/components/admin/footer.vue'
 import AdminTopbar from '@/components/admin/topbar.vue'
-import AdminSidebar from '@/components/admin/sidebar.vue'
 
 const router = useRouter()
 </script>
 
 <template>
-  <div class="flex min-h-screen text-on-surface bg-[#EAF0F8]">
-    <!-- SideNavBar -->
-    <AdminSidebar />
-
-    <!-- Main Content Area -->
-    <main class="ml-[240px] flex-grow flex flex-col min-h-screen">
       <!-- TopAppBar -->
       <AdminTopbar title="Tambah Skripsi Massal" />
 
@@ -152,8 +144,4 @@ const router = useRouter()
           </div>
         </div>
       </div>
-      
-      <AdminFooter />
-    </main>
-  </div>
 </template>

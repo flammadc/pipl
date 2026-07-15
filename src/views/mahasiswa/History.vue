@@ -1,12 +1,7 @@
 <script setup>
-import Navbar from '../../components/mahasiswa/navbar.vue'
-import Footer from '../../components/mahasiswa/footer.vue'
 </script>
 
 <template>
-  <div class="bg-background min-h-screen flex flex-col">
-    <Navbar />
-    
     <main class="flex-grow w-full max-w-container-max mx-auto px-margin-desktop py-stack-lg">
       <!-- Page Header -->
       <header class="flex flex-col md:flex-row md:items-center justify-between mb-stack-lg gap-stack-md">
@@ -128,7 +123,4 @@ import Footer from '../../components/mahasiswa/footer.vue'
         </button>
       </nav>
     </main>
-    
-    <Footer />
-  </div>
 </template>

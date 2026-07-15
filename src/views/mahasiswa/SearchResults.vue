@@ -1,12 +1,7 @@
 <script setup>
-import Navbar from '../../components/mahasiswa/navbar.vue'
-import Footer from '../../components/mahasiswa/footer.vue'
 </script>
 
 <template>
-  <div class="bg-background min-h-screen flex flex-col">
-    <Navbar />
-    
     <main class="flex-grow max-w-container-max mx-auto w-full px-margin-desktop py-stack-lg">
       <!-- Search Bar Row -->
       <div class="mb-stack-xl">
@@ -209,7 +204,4 @@ import Footer from '../../components/mahasiswa/footer.vue'
         </div>
       </div>
     </main>
-    
-    <Footer />
-  </div>
 </template>

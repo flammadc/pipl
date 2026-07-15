@@ -1,7 +1,5 @@
 <script setup>
 import { useRouter } from 'vue-router'
-import Navbar from '../../components/mahasiswa/navbar.vue'
-import Footer from '../../components/mahasiswa/footer.vue'
 
 const router = useRouter()
 
@@ -11,9 +9,6 @@ const goBack = () => {
 </script>
 
 <template>
-  <div class="bg-background min-h-screen flex flex-col">
-    <Navbar />
-    
     <main class="flex-grow max-w-container-max mx-auto px-margin-desktop py-stack-lg w-full">
       <!-- Breadcrumb Row -->
       <nav @click="goBack" class="flex items-center w-fit mb-stack-lg gap-2 group cursor-pointer">
@@ -162,7 +157,4 @@ const goBack = () => {
         </div>
       </div>
     </main>
-    
-    <Footer />
-  </div>
 </template>

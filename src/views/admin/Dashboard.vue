@@ -1,8 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import AdminFooter from '@/components/admin/footer.vue'
 import AdminTopbar from '@/components/admin/topbar.vue'
-import AdminSidebar from '@/components/admin/sidebar.vue'
 
 const showBars = ref(false)
 
@@ -14,13 +12,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex min-h-screen text-on-surface bg-[#EAF0F8]">
-    <!-- SideNavBar -->
-    <AdminSidebar />
-    
-    <!-- Main Content Area -->
-    <main class="ml-[240px] flex-1 flex flex-col w-full">
-      <!-- TopAppBar -->
+  <!-- TopAppBar -->
       <AdminTopbar title="Dashboard" :show-back-button="false" :show-tabs="false">
         <template #actions>
           <router-link to="/admin/add" class="bg-primary text-white px-5 py-2.5 rounded-xl font-label-md text-label-md flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-sm">
@@ -350,10 +342,5 @@ onMounted(() => {
             </a>
           </div>
         </div>
-      </div>
-    <AdminFooter />
-
-    </main>
-
-  </div>
+        </div>
 </template>

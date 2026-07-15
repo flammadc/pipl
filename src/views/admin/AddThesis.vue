@@ -1,9 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import AdminFooter from '@/components/admin/footer.vue'
 import AdminTopbar from '@/components/admin/topbar.vue'
-import AdminSidebar from '@/components/admin/sidebar.vue'
 
 const router = useRouter()
 const isSaving = ref(false)
@@ -38,13 +36,7 @@ const onDrop = (e) => {
 </script>
 
 <template>
-  <div class="flex min-h-screen text-on-surface bg-[#EAF0F8]">
-    <!-- SideNavBar -->
-    <AdminSidebar />
-
-    <!-- Main Content Area -->
-    <main class="ml-[240px] flex-grow flex flex-col min-h-screen">
-      <!-- TopAppBar Shell -->
+    <!-- TopAppBar Shell -->
       <AdminTopbar title="Tambah Skripsi Baru" />
 
       <!-- Form Content Container -->
@@ -140,7 +132,4 @@ const onDrop = (e) => {
           </div>
         </div>
       </div>
-      <AdminFooter />
-    </main>
-  </div>
 </template>
