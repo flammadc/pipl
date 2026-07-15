@@ -53,7 +53,10 @@ export default {
           "error-container": "#ffdad6",
           "on-primary-fixed-variant": "#2e4673",
           "on-error": "#ffffff",
-          "inverse-surface": "#303030"
+          "inverse-surface": "#303030",
+          "custom-success": "#2E7D32",
+          "custom-warning": "#C77700",
+          "custom-danger": "#C62828"
       },
       "borderRadius": {
           "DEFAULT": "0.25rem",

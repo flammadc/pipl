@@ -16,6 +16,11 @@ const router = createRouter({
       component: () => import('../views/mahasiswa/SearchResults.vue'),
     },
     {
+      path: '/history',
+      name: 'mahasiswa-history',
+      component: () => import('../views/mahasiswa/History.vue'),
+    },
+    {
       path: '/detail',
       name: 'mahasiswa-detail',
       component: () => import('../views/mahasiswa/ThesisDetail.vue'),

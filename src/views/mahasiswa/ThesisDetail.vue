@@ -154,6 +154,10 @@ const goBack = () => {
               <span class="material-symbols-outlined">picture_as_pdf</span>
               Unduh PDF Lengkap
             </button>
+            <button class="w-full border-2 border-secondary text-secondary h-[52px] rounded-xl font-bold flex items-center justify-center gap-stack-sm hover:bg-secondary-fixed transition-all active:scale-[0.98]">
+              <span class="material-symbols-outlined">bookmark</span>
+              Simpan ke Riwayat
+            </button>
           </div>
         </div>
       </div>
