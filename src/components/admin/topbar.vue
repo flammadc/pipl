@@ -6,6 +6,14 @@ const props = defineProps({
   title: {
     type: String,
     default: 'Tambah Skripsi'
+  },
+  showBackButton: {
+    type: Boolean,
+    default: true
+  },
+  showTabs: {
+    type: Boolean,
+    default: true
   }
 })
 
@@ -21,19 +29,23 @@ const isBulk = computed(() => route.path === '/admin/bulk')
 </script>
 
 <template>
-  <header class="flex justify-between items-center w-full h-20 px-margin-desktop bg-white shadow-sm z-40">
+  <header class="flex justify-between items-center w-full h-20 px-margin-desktop bg-white shadow-sm z-40 sticky top-0">
     <div class="flex items-center gap-4">
-      <button @click="goBack" class="flex items-center p-2 hover:bg-surface-container rounded-full transition-colors text-primary">
+      <button v-if="showBackButton" @click="goBack" class="flex items-center p-2 hover:bg-surface-container rounded-full transition-colors text-primary">
         <span class="material-symbols-outlined">arrow_back</span>
       </button>
       <h2 class="font-headline-md text-headline-md font-bold text-primary">{{ title }}</h2>
     </div>
     
     <div class="flex items-center gap-6">
-      <div class="flex items-center gap-3 p-1 bg-surface-container rounded-xl mr-8">
+      <div v-if="showTabs" class="flex items-center gap-3 p-1 bg-surface-container rounded-xl mr-8">
         <router-link to="/admin/add" :class="isManual ? 'bg-white shadow-sm text-primary font-bold' : 'text-on-surface-variant hover:text-primary transition-colors'" class="px-4 py-1.5 font-label-md text-label-md rounded-lg">Input Manual</router-link>
         <router-link to="/admin/bulk" :class="isBulk ? 'bg-white shadow-sm text-primary font-bold' : 'text-on-surface-variant hover:text-primary transition-colors'" class="px-4 py-1.5 font-label-md text-label-md rounded-lg">Impor Massal (CSV)</router-link>
       </div>
+
+      <slot name="actions"></slot>
+      
+      <div v-if="$slots.actions" class="h-8 w-[1px] bg-outline-variant/30 hidden md:block"></div>
       <div class="flex items-center gap-4">
         <span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">notifications</span>
         <span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">help_outline</span>
