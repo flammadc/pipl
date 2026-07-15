@@ -59,7 +59,7 @@ import Footer from '../../components/mahasiswa/footer.vue'
                     <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">person</span> Andi Wijaya</span>
                     <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">school</span> Teknik Informatika 2023</span>
                   </div>
-                  <a class="inline-block pt-2 text-primary font-label-md hover:underline" href="#">Lihat Detail</a>
+                  <router-link class="inline-block pt-2 text-primary font-label-md hover:underline" to="/detail">Lihat Detail</router-link>
                 </div>
                 <div class="flex flex-col items-center gap-1">
                   <div class="w-12 h-12 rounded-full border-[3px] border-[#2E5395] flex items-center justify-center">
@@ -77,7 +77,7 @@ import Footer from '../../components/mahasiswa/footer.vue'
                     <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">person</span> Budi Santoso</span>
                     <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">school</span> Teknik Informatika 2022</span>
                   </div>
-                  <a class="inline-block pt-2 text-primary font-label-md hover:underline" href="#">Lihat Detail</a>
+                  <router-link class="inline-block pt-2 text-primary font-label-md hover:underline" to="/detail">Lihat Detail</router-link>
                 </div>
                 <div class="flex flex-col items-center gap-1">
                   <div class="w-12 h-12 rounded-full border-[3px] border-[#2E5395] opacity-80 flex items-center justify-center">
@@ -95,7 +95,7 @@ import Footer from '../../components/mahasiswa/footer.vue'
                     <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">person</span> Citra Lestari</span>
                     <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">school</span> Sistem Informasi 2023</span>
                   </div>
-                  <a class="inline-block pt-2 text-primary font-label-md hover:underline" href="#">Lihat Detail</a>
+                  <router-link class="inline-block pt-2 text-primary font-label-md hover:underline" to="/detail">Lihat Detail</router-link>
                 </div>
                 <div class="flex flex-col items-center gap-1">
                   <div class="w-12 h-12 rounded-full border-[3px] border-[#2E5395] opacity-60 flex items-center justify-center">
@@ -113,7 +113,7 @@ import Footer from '../../components/mahasiswa/footer.vue'
                     <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">person</span> Dimas Yoga</span>
                     <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">school</span> Teknik Informatika 2021</span>
                   </div>
-                  <a class="inline-block pt-2 text-primary font-label-md hover:underline" href="#">Lihat Detail</a>
+                  <router-link class="inline-block pt-2 text-primary font-label-md hover:underline" to="/detail">Lihat Detail</router-link>
                 </div>
                 <div class="flex flex-col items-center gap-1">
                   <div class="w-12 h-12 rounded-full border-[3px] border-[#2E5395] opacity-40 flex items-center justify-center">
