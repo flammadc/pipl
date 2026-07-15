@@ -35,6 +35,11 @@ const router = createRouter({
       name: 'admin-add',
       component: () => import('../views/admin/AddThesis.vue'),
     },
+    {
+      path: '/admin/bulk',
+      name: 'admin-bulk',
+      component: () => import('../views/admin/BulkImport.vue'),
+    },
   ],
 })
 

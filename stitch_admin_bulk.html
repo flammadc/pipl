@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+
+<html class="light" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Impor Massal Skripsi - Smart Repositori TA</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-surface": "#1b1c1c",
+                    "on-secondary-fixed": "#001a42",
+                    "secondary-container": "#93b6fe",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed": "#dde3eb",
+                    "outline-variant": "#c4c6d0",
+                    "error": "#ba1a1a",
+                    "surface-container-highest": "#e5e2e1",
+                    "primary-fixed": "#d8e2ff",
+                    "on-tertiary": "#ffffff",
+                    "surface-container": "#f0eded",
+                    "inverse-primary": "#afc6fb",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-fixed-dim": "#c1c7cf",
+                    "tertiary-container": "#33393f",
+                    "background": "#fcf9f8",
+                    "on-secondary": "#ffffff",
+                    "tertiary": "#1d2429",
+                    "on-primary": "#ffffff",
+                    "primary-container": "#1f3864",
+                    "outline": "#747780",
+                    "on-primary-container": "#8ba2d5",
+                    "on-secondary-fixed-variant": "#1d4586",
+                    "surface-container-low": "#f6f3f2",
+                    "surface": "#fcf9f8",
+                    "on-tertiary-fixed-variant": "#41474e",
+                    "on-background": "#1b1c1c",
+                    "primary-fixed-dim": "#afc6fb",
+                    "on-surface-variant": "#44474f",
+                    "inverse-on-surface": "#f3f0ef",
+                    "secondary-fixed": "#d8e2ff",
+                    "on-primary-fixed": "#001a41",
+                    "surface-tint": "#475e8c",
+                    "inverse-surface": "#303030",
+                    "secondary": "#395da0",
+                    "on-error": "#ffffff",
+                    "secondary-fixed-dim": "#adc6ff",
+                    "on-tertiary-container": "#9ca3aa",
+                    "on-tertiary-fixed": "#161c22",
+                    "surface-dim": "#dcd9d9",
+                    "on-primary-fixed-variant": "#2e4673",
+                    "surface-bright": "#fcf9f8",
+                    "on-error-container": "#93000a",
+                    "primary": "#03224d",
+                    "surface-container-high": "#eae7e7",
+                    "surface-variant": "#e5e2e1",
+                    "on-secondary-container": "#1e4587"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-max": "1280px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "48px",
+                    "stack-sm": "8px",
+                    "stack-md": "16px",
+                    "stack-xl": "64px",
+                    "stack-lg": "32px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "label-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "display-lg": ["Inter"]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex">
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-screen w-[240px] bg-primary-container text-on-primary-container shadow-sm z-50 flex flex-col py-6 px-4">
+<div class="mb-10 px-2">
+<h1 class="font-headline-md text-headline-md font-bold text-on-primary-container">Smart Repositori TA</h1>
+<p class="text-on-primary-container/60 font-label-sm text-label-sm uppercase tracking-wider mt-1">Academic Admin</p>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 text-on-primary-container/70 hover:text-on-primary-container hover:bg-primary/50 transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-secondary-container text-on-secondary-container rounded-lg font-bold scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span class="font-label-md text-label-md">Data Skripsi</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-primary-container/70 hover:text-on-primary-container hover:bg-primary/50 transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="cluster">flutter</span>
+<span class="font-label-md text-label-md">Klaster</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-primary-container/70 hover:text-on-primary-container hover:bg-primary/50 transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-label-md text-label-md">Riwayat Pencarian</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-primary-container/70 hover:text-on-primary-container hover:bg-primary/50 transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Pengaturan</span>
+</a>
+</nav>
+<div class="pt-6 border-t border-on-primary-container/10">
+<a class="flex items-center gap-3 px-4 py-3 text-on-primary-container/70 hover:text-on-primary-container hover:bg-primary/50 transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-[240px] flex-1 flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center w-full h-16 px-8 bg-surface shadow-sm sticky top-0 z-40">
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-surface-container rounded-full transition-colors">
+<span class="material-symbols-outlined text-primary" data-icon="arrow_back">arrow_back</span>
+</button>
+<h2 class="font-headline-md text-headline-md text-primary font-bold">Tambah Skripsi Baru</h2>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-3 p-1 bg-surface-container rounded-xl">
+<button class="px-4 py-1.5 font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors">Input Manual</button>
+<button class="px-4 py-1.5 font-label-md text-label-md bg-white shadow-sm text-primary font-bold rounded-lg">Impor Massal (CSV)</button>
+</div>
+<div class="h-8 w-px bg-outline-variant"></div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer" data-icon="help_outline">help_outline</span>
+<img class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcj9EB6ig1mJqXrrz48jsN-RfdRSjXCQ8WMSjca6bXr3VgynkVrTD2aGpljWQ7wpuCwHi9hmLF6kQz2OW1JnzMEpmFiAppzhlo_NAu9fAL7AeTo-fZ9R5HeshTT0UYrFhggogGP5dqASzeTFLx0IQONqo4tJ3et1FNoh9qG3wnyeMfEVROUVPeysN6gJCImhZ7Qkgt78sw7g8vqUxAGCNGAyB1C3OUXYPtX3feDfK_vq2zAh2pdOxR0RtHBT1tkKY7l_ECiXXMyw"/>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="p-margin-desktop max-w-5xl mx-auto w-full">
+<!-- 3-Step Import Workflow -->
+<div class="bg-white rounded-xl shadow-[0px_2px_4px_rgba(31,56,100,0.05)] p-stack-xl flex flex-col gap-10">
+<!-- STEP 1: Unduh Template -->
+<section class="flex flex-col md:flex-row items-start md:items-center justify-between gap-gutter">
+<div class="flex-1">
+<div class="flex items-center gap-3 mb-2">
+<span class="w-8 h-8 flex items-center justify-center bg-primary-fixed text-primary font-bold rounded-full text-label-md">1</span>
+<h3 class="font-headline-md text-headline-md text-primary">Unduh Template</h3>
+</div>
+<p class="text-on-surface-variant font-body-md max-w-xl">Gunakan template CSV kami untuk memastikan format data yang benar sebelum melakukan unggah massal ke sistem.</p>
+</div>
+<button class="flex items-center gap-2 px-6 py-3 border-2 border-primary text-primary font-bold rounded-xl hover:bg-primary/5 transition-colors h-[44px]">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+<span class="font-label-md text-label-md">Unduh Template CSV</span>
+</button>
+</section>
+<hr class="border-surface-container"/>
+<!-- STEP 2: Unggah File PDF (ZIP) -->
+<section class="flex flex-col gap-stack-lg">
+<div class="flex items-center gap-3">
+<span class="w-8 h-8 flex items-center justify-center bg-primary-fixed text-primary font-bold rounded-full text-label-md">2</span>
+<h3 class="font-headline-md text-headline-md text-primary">Unggah File PDF (ZIP)</h3>
+</div>
+<div class="border-2 border-dashed border-outline-variant rounded-xl p-10 flex flex-col items-center justify-center bg-surface-container-low hover:bg-surface-container transition-all cursor-pointer group">
+<div class="w-14 h-14 bg-primary-fixed-dim rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="cloud_upload">cloud_upload</span>
+</div>
+<p class="font-headline-md text-headline-md text-primary mb-1 text-center">Seret file ZIP berisi PDF ke sini atau <span class="underline">klik untuk unggah</span></p>
+<p class="text-on-surface-variant font-label-md text-label-md">Maksimal ukuran 200MB. Nama setiap file PDF harus unik (contoh: 2023-001.pdf)</p>
+</div>
+<!-- File Confirmation Row -->
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-xl border border-outline-variant/30">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-secondary-container/20 rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" data-icon="folder_zip">folder_zip</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface font-bold">skripsi_2024.zip</p>
+<p class="text-on-surface-variant text-[12px]">45.2 MB</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-green-600" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<button class="p-1 hover:bg-error-container/20 rounded-full text-error transition-colors">
+<span class="material-symbols-outlined text-xl" data-icon="close">close</span>
+</button>
+</div>
+</div>
+</section>
+<hr class="border-surface-container"/>
+<!-- STEP 3: Unggah File Metadata (CSV) -->
+<section class="flex flex-col gap-stack-lg">
+<div class="flex items-center gap-3">
+<span class="w-8 h-8 flex items-center justify-center bg-primary-fixed text-primary font-bold rounded-full text-label-md">3</span>
+<h3 class="font-headline-md text-headline-md text-primary">Unggah File Metadata (CSV)</h3>
+</div>
+<div class="border-2 border-dashed border-outline-variant rounded-xl p-10 flex flex-col items-center justify-center bg-surface-container-low hover:bg-surface-container transition-all cursor-pointer group">
+<div class="w-14 h-14 bg-primary-fixed-dim rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="upload_file">upload_file</span>
+</div>
+<p class="font-headline-md text-headline-md text-primary mb-1 text-center">Seret file CSV metadata ke sini atau <span class="underline">klik untuk unggah</span></p>
+</div>
+<div class="mt-2">
+<h4 class="font-label-md text-label-md text-on-surface-variant mb-3 uppercase tracking-wider">Kolom yang Diperlukan</h4>
+<div class="flex flex-wrap gap-2">
+<span class="px-4 py-1.5 bg-secondary-fixed text-on-secondary-fixed rounded-full font-label-md text-label-md">Judul</span>
+<span class="px-4 py-1.5 bg-secondary-fixed text-on-secondary-fixed rounded-full font-label-md text-label-md">Abstrak</span>
+<span class="px-4 py-1.5 bg-secondary-fixed text-on-secondary-fixed rounded-full font-label-md text-label-md">Penulis</span>
+<span class="px-4 py-1.5 bg-secondary-fixed text-on-secondary-fixed rounded-full font-label-md text-label-md">Prodi</span>
+<span class="px-4 py-1.5 bg-secondary-fixed text-on-secondary-fixed rounded-full font-label-md text-label-md">Tahun</span>
+<span class="px-4 py-1.5 bg-secondary-fixed text-on-secondary-fixed rounded-full font-label-md text-label-md">Pembimbing</span>
+<span class="px-4 py-1.5 bg-primary/10 text-primary border border-primary/20 rounded-full font-label-md text-label-md flex items-center gap-1.5 group relative cursor-help">
+                                nama_file_pdf
+                                <span class="material-symbols-outlined text-sm" data-icon="info">info</span>
+<!-- Tooltip placeholder -->
+<span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-inverse-surface text-inverse-on-surface text-[11px] rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                                    Harus cocok dengan nama file PDF di dalam ZIP
+                                </span>
+</span>
+</div>
+</div>
+</section>
+<!-- Validation Preview Section -->
+<div class="bg-surface-container-low rounded-xl p-6 border border-outline-variant/30 flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<h4 class="font-headline-md text-label-md text-primary font-bold">Pratinjau Validasi</h4>
+<a class="text-primary font-label-md text-label-md hover:underline flex items-center gap-1" href="#">
+                            Lihat detail baris bermasalah
+                            <span class="material-symbols-outlined text-sm" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</a>
+</div>
+<div class="flex flex-wrap gap-4">
+<div class="flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 border border-green-200 rounded-lg font-label-md text-label-md">
+<span class="w-2 h-2 rounded-full bg-green-600"></span>
+                            142 baris valid
+                        </div>
+<div class="flex items-center gap-2 px-4 py-2 bg-amber-50 text-amber-700 border border-amber-200 rounded-lg font-label-md text-label-md">
+<span class="w-2 h-2 rounded-full bg-amber-600"></span>
+                            3 PDF tidak ditemukan
+                        </div>
+<div class="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-700 border border-red-200 rounded-lg font-label-md text-label-md">
+<span class="w-2 h-2 rounded-full bg-red-600"></span>
+                            1 baris data tidak lengkap
+                        </div>
+</div>
+</div>
+</div>
+<!-- Bottom Actions and Info Banner -->
+<div class="mt-10 flex flex-col gap-6">
+<div class="flex items-start gap-4 p-5 bg-secondary-container/10 rounded-xl border border-secondary-container/20">
+<span class="material-symbols-outlined text-secondary" data-icon="info" style="font-variation-settings: 'FILL' 1;">info</span>
+<p class="text-on-secondary-container font-body-md flex-1">
+                        Sistem akan memvalidasi data dan menghasilkan embedding secara massal. Skripsi dengan PDF tidak ditemukan tetap akan disimpan dan bisa dilengkapi kemudian.
+                    </p>
+</div>
+<div class="flex items-center justify-end gap-4">
+<button class="px-8 py-3 border-2 border-outline text-on-surface-variant font-bold rounded-xl hover:bg-surface-container-highest transition-colors min-h-[44px]">
+                        Batal
+                    </button>
+<button class="px-10 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary-container shadow-sm active:scale-95 transition-all min-h-[44px]">
+                        Mulai Impor Data
+                    </button>
+</div>
+</div>
+</div>
+<!-- Spacer -->
+<div class="h-stack-xl"></div>
+</main>
+<script>
+        // Micro-interaction for buttons
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mousedown', () => {
+                btn.style.transform = 'scale(0.98)';
+            });
+            btn.addEventListener('mouseup', () => {
+                btn.style.transform = 'scale(1)';
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'scale(1)';
+            });
+        });
+
+        // Simple placeholder for dropzone interactivity
+        document.querySelectorAll('.border-dashed').forEach(zone => {
+            zone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                zone.classList.add('bg-primary-fixed/10', 'border-primary');
+            });
+            zone.addEventListener('dragleave', () => {
+                zone.classList.remove('bg-primary-fixed/10', 'border-primary');
+            });
+            zone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                zone.classList.remove('bg-primary-fixed/10', 'border-primary');
+            });
+        });
+    </script>
+</body></html>

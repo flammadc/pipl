@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminFooter from '@/components/admin/footer.vue'
+import AdminTopbar from '@/components/admin/topbar.vue'
 
 const router = useRouter()
 const isSaving = ref(false)
@@ -76,32 +77,12 @@ const onDrop = (e) => {
     <!-- Main Content Area -->
     <main class="ml-[240px] flex-grow flex flex-col min-h-screen">
       <!-- TopAppBar Shell -->
-      <header class="flex justify-between items-center w-full h-20 px-margin-desktop bg-surface shadow-sm z-40">
-        <div class="flex items-center gap-4">
-          <button @click="goBack" class="flex items-center  p-2 hover:bg-surface-container rounded-full transition-colors text-primary">
-            <span class="material-symbols-outlined">arrow_back</span>
-          </button>
-          <h2 class="font-headline-md text-headline-md font-bold text-primary">Tambah Skripsi Baru</h2>
-        </div>
-        <div class="flex items-center gap-6">
-          <div class="flex items-center gap-6 mr-8">
-            <button class="font-label-sm text-label-sm text-primary font-bold border-b-2 border-primary pb-1">Input Manual</button>
-            <button class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors">Impor Massal (CSV)</button>
-          </div>
-          <div class="flex items-center gap-4">
-            <span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">notifications</span>
-            <span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">help_outline</span>
-            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden border border-outline-variant">
-              <img class="w-full h-full object-cover" alt="Admin Profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcJo4yiBuUwDkqQFBfL7Cpr3N_3ZrtRHCNSAUhmkI3EwuvuRTkBtSgCfOBEB3vH2ltZ-XsJPIMpabXrUsQnP0RZ0H-_t8XTGsRh5xiNf12BrzOcKfV-0FctTdbt0T0uqKp7N-g77yEb2IfpBUdMGXdubVlgx30h9g1BNj5nqe2TN1ftGlKwdnlIGXAJy-uvoIT5Kr_2dwjaNvMHm1_y6aTr0DezxnaJ5ktiyW32xgfZLPIK9CVZ05ICE9yvhNSj4nVf1wpIaTTfA"/>
-            </div>
-          </div>
-        </div>
-      </header>
+      <AdminTopbar title="Tambah Skripsi Baru" />
 
       <!-- Form Content Container -->
-      <div class="flex-grow py-stack-xl px-margin-desktop overflow-y-auto">
-        <div class="max-w-4xl mx-auto">
-          <div class="form-card bg-surface-container-lowest rounded-xl p-8 md:p-12 shadow-sm border border-primary/5">
+      <div class="flex-grow p-margin-desktop overflow-y-auto">
+        <div class="max-w-5xl mx-auto">
+          <div class="bg-white rounded-xl shadow-[0px_2px_4px_rgba(31,56,100,0.05)] p-stack-xl flex flex-col gap-10">
             <form @submit.prevent="submitForm" class="space-y-gutter">
               <!-- Title Field -->
               <div class="space-y-stack-sm">
