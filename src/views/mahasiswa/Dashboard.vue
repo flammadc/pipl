@@ -1,8 +1,10 @@
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import Navbar from '../../components/mahasiswa/navbar.vue'
 import Footer from '../../components/mahasiswa/footer.vue'
 
+const router = useRouter()
 const searchQuery = ref('')
 const charCount = ref(0)
 
@@ -19,6 +21,13 @@ const recentSearches = [
 const setSearch = (query) => {
   searchQuery.value = query
   updateCounter()
+  submitSearch()
+}
+
+const submitSearch = () => {
+  if (searchQuery.value.trim()) {
+    router.push({ path: '/results', query: { q: searchQuery.value } })
+  }
 }
 </script>
 
@@ -57,7 +66,7 @@ const setSearch = (query) => {
               <span :class="{'text-error': charCount >= 450}">{{ charCount }}</span>/500
             </div>
           </div>
-          <button class="w-full mt-6 bg-primary-container text-on-tertiary py-4 rounded-xl flex items-center justify-center gap-2 font-label-md text-label-md transition-all hover:bg-primary active:scale-[0.98] custom-shadow-resting">
+          <button @click="submitSearch" class="w-full mt-6 bg-primary-container text-on-tertiary py-4 rounded-xl flex items-center justify-center gap-2 font-label-md text-label-md transition-all hover:bg-primary active:scale-[0.98] custom-shadow-resting">
             <span class="material-symbols-outlined" style="font-variation-settings: 'wght' 600;">search</span>
             Cari Topik Serupa
           </button>
