@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 
 const props = defineProps({
   title: {
@@ -19,14 +20,27 @@ const props = defineProps({
 
 const router = useRouter()
 const route = useRoute()
+const authStore = useAuthStore()
 const showProfileMenu = ref(false)
 const profileMenuRef = ref(null)
+
+const userInitials = computed(() => {
+  const name = authStore.user?.name || 'Admin'
+  const words = name.trim().split(' ').filter(w => w.length > 0)
+  if (words.length >= 2) {
+    return (words[0][0] + words[1][0]).toUpperCase()
+  } else if (words.length === 1) {
+    return (words[0][0]).toUpperCase()
+  }
+  return 'A'
+})
 
 const goBack = () => {
   router.back()
 }
 
 const handleLogout = () => {
+  authStore.logout()
   router.push('/login')
 }
 
@@ -69,9 +83,10 @@ const isBulk = computed(() => route.path === '/admin/bulk')
       <div class="flex items-center gap-4">
         <span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">notifications</span>
         <span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">help_outline</span>
-        <div class="relative" ref="profileMenuRef">
-          <button @click="showProfileMenu = !showProfileMenu" class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden border border-outline-variant focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
-            <img class="w-full h-full object-cover" alt="Admin Profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcJo4yiBuUwDkqQFBfL7Cpr3N_3ZrtRHCNSAUhmkI3EwuvuRTkBtSgCfOBEB3vH2ltZ-XsJPIMpabXrUsQnP0RZ0H-_t8XTGsRh5xiNf12BrzOcKfV-0FctTdbt0T0uqKp7N-g77yEb2IfpBUdMGXdubVlgx30h9g1BNj5nqe2TN1ftGlKwdnlIGXAJy-uvoIT5Kr_2dwjaNvMHm1_y6aTr0DezxnaJ5ktiyW32xgfZLPIK9CVZ05ICE9yvhNSj4nVf1wpIaTTfA"/>
+        <div class="relative flex items-center gap-4" ref="profileMenuRef">
+          <span class="hidden md:block text-label-md font-label-md text-on-surface">{{ authStore.user?.name || 'Admin' }}</span>
+          <button @click="showProfileMenu = !showProfileMenu" class="w-10 h-10 rounded-full bg-primary flex items-center justify-center overflow-hidden border border-outline-variant focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+            <span class="text-white font-bold text-label-md">{{ userInitials }}</span>
           </button>
           
           <!-- Dropdown Menu -->

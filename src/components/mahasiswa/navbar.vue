@@ -1,10 +1,23 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
+const authStore = useAuthStore()
 const isDropdownOpen = ref(false)
 const dropdownRef = ref(null)
+
+const userInitials = computed(() => {
+  const name = authStore.user?.name || 'Mahasiswa'
+  const words = name.trim().split(' ').filter(w => w.length > 0)
+  if (words.length >= 2) {
+    return (words[0][0] + words[1][0]).toUpperCase()
+  } else if (words.length === 1) {
+    return (words[0][0]).toUpperCase()
+  }
+  return 'M'
+})
 
 const goToDashboard = () => {
   router.push('/')
@@ -22,6 +35,7 @@ const closeDropdown = (e) => {
 
 const handleLogout = () => {
   isDropdownOpen.value = false
+  authStore.logout()
   router.push('/login')
 }
 
@@ -42,9 +56,9 @@ onUnmounted(() => {
       </h1>
       <div class="relative" ref="dropdownRef">
         <div @click="toggleDropdown" class="flex items-center gap-4 group cursor-pointer transition-all active:opacity-80 active:scale-95">
-          <span class="hidden md:block text-label-md font-label-md text-on-surface">Budi Santoso</span>
-          <div class="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden border border-outline-variant">
-            <img class="w-full h-full object-cover" alt="Profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBe5w_psX9Rvrpm3SfUaJj366w6-BxNVQe4JArz-9qu5gV3Nt5cdhnBj0D_GjdDLxQ3PFrCYWSfpLeVHCXBeTFrOXS8yB-ZBtJw2KwLxtSpkGfXht-8BxqT8t5XOQkTjRr80gz-8-cgSKRmFPEFdmNO5wBMGt_ELpnlZoyQebYmW4M8Dx2L78wD_tEJf6ZIcnhrqgs5xTjZ0u1-svmuUTT0QHe2cHnnNQ9WzoRRXSPrDsnhS0t1EYJynz-Hv2wqwQQ8UyqPOP2neQ">
+          <span class="hidden md:block text-label-md font-label-md text-on-surface">{{ authStore.user?.name || 'Mahasiswa' }}</span>
+          <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center overflow-hidden border border-outline-variant">
+            <span class="text-white font-bold text-label-md">{{ userInitials }}</span>
           </div>
         </div>
         
