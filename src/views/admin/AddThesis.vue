@@ -39,7 +39,25 @@ const onDrop = (e) => {
     <!-- TopAppBar Shell -->
       <AdminTopbar title="Tambah Skripsi Baru" :show-tabs="true" :show-back-button="true" />
 
-      <!-- Form Content Container -->
+      <!-- Coming Soon Overlay Wrapper -->
+      <div class="relative flex-grow">
+        <!-- Overlay -->
+        <div class="absolute inset-0 z-20 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center gap-6 rounded-xl">
+          <div class="w-20 h-20 rounded-2xl bg-surface-container-high flex items-center justify-center">
+            <span class="material-symbols-outlined text-4xl text-on-surface-variant">construction</span>
+          </div>
+          <div class="text-center">
+            <h2 class="text-headline-md font-headline-md text-on-surface-variant mb-2">Coming Soon</h2>
+            <p class="text-body-md text-on-surface-variant max-w-sm">Fitur tambah skripsi manual sedang dalam pengembangan.<br>Data saat ini diambil langsung dari Repositori UNIKOM.</p>
+          </div>
+          <button @click="goBack" class="px-6 py-3 rounded-xl border border-outline-variant text-on-surface-variant font-label-md hover:bg-surface-container-low transition-colors">
+            Kembali ke Dashboard
+          </button>
+        </div>
+
+        <!-- Dimmed form behind overlay -->
+        <div class="opacity-30 pointer-events-none">
+
       <div class="flex-grow p-margin-desktop overflow-y-auto">
         <div class="max-w-5xl mx-auto">
           <div class="bg-white rounded-xl shadow-[0px_2px_4px_rgba(31,56,100,0.05)] p-stack-xl flex flex-col gap-10">
@@ -132,4 +150,6 @@ const onDrop = (e) => {
           </div>
         </div>
       </div>
+        </div> <!-- end dimmed form -->
+      </div> <!-- end overlay wrapper -->
 </template>

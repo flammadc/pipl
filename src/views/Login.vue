@@ -1,25 +1,26 @@
 <script setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
+const route = useRoute()
+const authStore = useAuthStore()
+
 const showPassword = ref(false)
-const nim = ref('')
+const email = ref('')
 const password = ref('')
-const isLoading = ref(false)
 
 const togglePassword = () => {
   showPassword.value = !showPassword.value
 }
 
-const handleLogin = () => {
-  isLoading.value = true
-  // Mock login delay
-  setTimeout(() => {
-    isLoading.value = false
-    // Redirect to Mahasiswa dashboard (/) as requested
-    router.push('/')
-  }, 1000)
+const handleLogin = async () => {
+  const ok = await authStore.login(email.value, password.value)
+  if (ok) {
+    const redirect = route.query.redirect || '/'
+    router.push(redirect)
+  }
 }
 </script>
 
@@ -50,13 +51,22 @@ const handleLogin = () => {
             <p class="font-body-md text-on-surface-variant">Silakan masuk untuk mengakses repositori skripsi</p>
           </header>
 
+          <!-- Error Banner -->
+          <div
+            v-if="authStore.error"
+            class="mb-stack-md flex items-center gap-3 px-4 py-3 bg-error-container text-on-error-container rounded-lg text-body-sm font-body-md"
+          >
+            <span class="material-symbols-outlined text-[18px]">error</span>
+            {{ authStore.error }}
+          </div>
+
           <form @submit.prevent="handleLogin" class="space-y-stack-md">
-            <!-- NIM Input -->
+            <!-- Email Input -->
             <div class="space-y-2">
-              <label for="nim" class="block font-label-md text-on-surface">NIM (Nomor Induk Mahasiswa)</label>
+              <label for="email" class="block font-label-md text-on-surface">Email</label>
               <div class="relative input-group">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline transition-colors">person</span>
-                <input v-model="nim" type="text" id="nim" required placeholder="Masukkan NIM Anda" class="w-full h-12 pl-10 pr-4 bg-surface-container-low border border-outline-variant rounded-lg font-body-md focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline transition-colors">mail</span>
+                <input v-model="email" type="email" id="email" required placeholder="nama@email.com" class="w-full h-12 pl-10 pr-4 bg-surface-container-low border border-outline-variant rounded-lg font-body-md focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all">
               </div>
             </div>
 
@@ -78,8 +88,8 @@ const handleLogin = () => {
             </div>
 
             <!-- Submit Button -->
-            <button type="submit" :disabled="isLoading" class="w-full h-[48px] bg-primary text-on-primary font-label-md rounded-lg flex items-center justify-center gap-2 hover:bg-primary-container transition-all active:scale-[0.98] shadow-sm mt-stack-md disabled:opacity-70 disabled:cursor-not-allowed">
-              <template v-if="isLoading">
+            <button type="submit" :disabled="authStore.isLoading" class="w-full h-[48px] bg-primary text-on-primary font-label-md rounded-lg flex items-center justify-center gap-2 hover:bg-primary-container transition-all active:scale-[0.98] shadow-sm mt-stack-md disabled:opacity-70 disabled:cursor-not-allowed">
+              <template v-if="authStore.isLoading">
                 <span class="material-symbols-outlined animate-spin">progress_activity</span>
                 Memproses...
               </template>

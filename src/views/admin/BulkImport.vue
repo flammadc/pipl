@@ -9,6 +9,25 @@ const router = useRouter()
       <!-- TopAppBar -->
       <AdminTopbar title="Tambah Skripsi Massal" :show-tabs="true" :show-back-button="true" />
 
+      <!-- Coming Soon Overlay Wrapper -->
+      <div class="relative flex-grow">
+        <!-- Overlay -->
+        <div class="absolute inset-0 z-20 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center gap-6 rounded-xl">
+          <div class="w-20 h-20 rounded-2xl bg-surface-container-high flex items-center justify-center">
+            <span class="material-symbols-outlined text-4xl text-on-surface-variant">construction</span>
+          </div>
+          <div class="text-center">
+            <h2 class="text-headline-md font-headline-md text-on-surface-variant mb-2">Coming Soon</h2>
+            <p class="text-body-md text-on-surface-variant max-w-sm">Fitur impor massal sedang dalam pengembangan.<br>Data saat ini diambil langsung dari Repositori UNIKOM.</p>
+          </div>
+          <button @click="router.push('/admin')" class="px-6 py-3 rounded-xl border border-outline-variant text-on-surface-variant font-label-md hover:bg-surface-container-low transition-colors">
+            Kembali ke Dashboard
+          </button>
+        </div>
+
+        <!-- Dimmed content behind overlay -->
+        <div class="opacity-30 pointer-events-none">
+
       <!-- Page Content -->
       <div class="flex-grow p-margin-desktop overflow-y-auto">
         <div class="max-w-5xl mx-auto w-full">
@@ -144,4 +163,6 @@ const router = useRouter()
           </div>
         </div>
       </div>
+        </div> <!-- end dimmed content -->
+      </div> <!-- end overlay wrapper -->
 </template>

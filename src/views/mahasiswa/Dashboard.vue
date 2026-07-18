@@ -1,20 +1,19 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useSearchStore } from '@/stores/search'
+import { get } from '@/services/api'
 
 const router = useRouter()
+const searchStore = useSearchStore()
+
 const searchQuery = ref('')
 const charCount = ref(0)
+const recentSearches = ref([])
 
 const updateCounter = () => {
   charCount.value = searchQuery.value.length
 }
-
-const recentSearches = [
-  'Deteksi Hoaks',
-  'IoT Smart Home',
-  'Analisis Sentimen Twitter'
-]
 
 const setSearch = (query) => {
   searchQuery.value = query
@@ -22,11 +21,26 @@ const setSearch = (query) => {
   submitSearch()
 }
 
-const submitSearch = () => {
-  if (searchQuery.value.trim()) {
-    router.push({ path: '/results', query: { q: searchQuery.value } })
-  }
+const submitSearch = async () => {
+  if (!searchQuery.value.trim()) return
+  // Trigger API call in store, then navigate
+  router.push({ path: '/results', query: { q: searchQuery.value } })
 }
+
+onMounted(async () => {
+  try {
+    const history = await get('/api/history')
+    // Take the 5 most recent unique ideas
+    const seen = new Set()
+    recentSearches.value = history
+      .filter(h => { if (seen.has(h.idea)) return false; seen.add(h.idea); return true })
+      .slice(0, 5)
+      .map(h => h.idea)
+  } catch {
+    // Not logged in or network error — leave empty
+    recentSearches.value = []
+  }
+})
 </script>
 
 <template>
@@ -61,14 +75,19 @@ const submitSearch = () => {
             <span :class="{'text-error': charCount >= 450}">{{ charCount }}</span>/500
           </div>
         </div>
-        <button @click="submitSearch" class="w-full mt-6 bg-primary-container text-on-tertiary py-4 rounded-xl flex items-center justify-center gap-2 font-label-md text-label-md transition-all hover:bg-primary active:scale-[0.98] custom-shadow-resting">
-          <span class="material-symbols-outlined" style="font-variation-settings: 'wght' 600;">search</span>
-          Cari Topik Serupa
+        <button
+          @click="submitSearch"
+          :disabled="searchStore.isLoading || !searchQuery.trim()"
+          class="w-full mt-6 bg-primary-container text-on-tertiary py-4 rounded-xl flex items-center justify-center gap-2 font-label-md text-label-md transition-all hover:bg-primary active:scale-[0.98] custom-shadow-resting disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          <span v-if="searchStore.isLoading" class="material-symbols-outlined animate-spin">progress_activity</span>
+          <span v-else class="material-symbols-outlined" style="font-variation-settings: 'wght' 600;">search</span>
+          {{ searchStore.isLoading ? 'Menganalisis...' : 'Cari Topik Serupa' }}
         </button>
       </div>
       
       <!-- Recent Searches -->
-      <div class="w-full pt-stack-md">
+      <div v-if="recentSearches.length" class="w-full pt-stack-md">
         <h3 class="text-label-sm font-label-sm uppercase tracking-wider text-outline mb-4 text-left md:text-center px-4">
           Pencarian Terakhir
         </h3>
@@ -77,7 +96,7 @@ const submitSearch = () => {
             v-for="search in recentSearches" 
             :key="search"
             @click="setSearch(search)"
-            class="px-5 py-2 rounded-full bg-secondary-container/20 text-on-secondary-container border border-secondary-container/30 text-label-md font-label-md hover:bg-secondary-container/40 transition-colors">
+            class="px-5 py-2 rounded-full bg-secondary-container/20 text-on-secondary-container border border-secondary-container/30 text-label-md font-label-md hover:bg-secondary-container/40 transition-colors truncate max-w-[280px]">
             {{ search }}
           </button>
         </div>
