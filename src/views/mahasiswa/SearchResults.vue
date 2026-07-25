@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useSearchStore } from '@/stores/search'
+import { post } from '@/services/api'
 
 const route = useRoute()
 const router = useRouter()
@@ -9,6 +10,9 @@ const searchStore = useSearchStore()
 
 const searchQuery = ref(route.query.q || '')
 const localError = ref(null)
+const suggestions = ref([])
+const loadingSuggestions = ref(false)
+const suggestionsError = ref(null)
 
 // Similarity score → label
 const scoreLabel = computed(() => {
@@ -25,12 +29,28 @@ function similarityBorderColor(score) {
   return '#16a34a'
 }
 
+async function loadSuggestions(idea) {
+  if (!idea?.trim()) return
+  loadingSuggestions.value = true
+  suggestionsError.value = null
+  try {
+    const data = await post('/api/suggest-titles', { idea: idea.trim() })
+    suggestions.value = data.suggestions || []
+  } catch (e) {
+    suggestionsError.value = e.message || 'Gagal memuat saran judul.'
+  } finally {
+    loadingSuggestions.value = false
+  }
+}
+
 async function runSearch(q) {
   if (!q?.trim()) return
   localError.value = null
   const result = await searchStore.checkIdea(q.trim())
   if (!result) {
     localError.value = searchStore.error || 'Gagal mengambil data dari server.'
+  } else {
+    await loadSuggestions(q.trim())
   }
 }
 
@@ -173,7 +193,7 @@ watch(() => route.query.q, (newQ) => {
                   :style="{ borderColor: similarityBorderColor(thesis.score) }"
                 >
                   <span class="text-label-sm font-bold" :style="{ color: similarityBorderColor(thesis.score) }">
-                    {{ thesis.score != null ? Math.round(Math.min(thesis.score * 10, 99)) + '%' : '—' }}
+                    {{ thesis.score != null ? Math.round(Math.min(thesis.score, 100)) + '%' : '—' }}
                   </span>
                 </div>
                 <span class="text-[10px] uppercase font-bold text-outline">Skor</span>
@@ -211,35 +231,56 @@ watch(() => route.query.q, (newQ) => {
           </div>
         </div>
 
-        <!-- Rekomendasi Langkah Selanjutnya -->
+        <!-- Saran Judul Alternatif -->
         <section class="space-y-4">
-          <h3 class="text-headline-md font-headline-md text-on-surface px-2">Rekomendasi Langkah Selanjutnya</h3>
-          <div class="space-y-3">
-            <div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-outline-variant flex gap-4 items-start hover:-translate-y-0.5 transition-transform">
+          <div class="flex items-center justify-between px-2">
+            <h3 class="text-headline-md font-headline-md text-on-surface">Saran Judul Alternatif</h3>
+            <button
+              v-if="suggestions.length"
+              @click="loadSuggestions(searchQuery)"
+              :disabled="loadingSuggestions"
+              class="text-primary text-label-sm font-bold flex items-center gap-1 hover:underline disabled:opacity-50"
+            >
+              <span class="material-symbols-outlined text-[16px]" :class="{'animate-spin': loadingSuggestions}">refresh</span>
+              {{ loadingSuggestions ? 'Memuat...' : 'Generate Ulang' }}
+            </button>
+          </div>
+
+          <!-- Loading -->
+          <div v-if="loadingSuggestions" class="space-y-3">
+            <div v-for="i in 3" :key="i" class="h-16 bg-surface-container-low rounded-xl animate-pulse"></div>
+          </div>
+
+          <!-- Error -->
+          <div v-else-if="suggestionsError" class="bg-error-container text-on-error-container p-4 rounded-xl text-body-sm">
+            {{ suggestionsError }}
+          </div>
+
+          <!-- Empty / Initial -->
+          <div v-else-if="!suggestions.length" class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant text-center">
+            <span class="material-symbols-outlined text-outline-variant text-4xl mb-2">lightbulb</span>
+            <p class="text-body-md text-on-surface-variant">Saran judul alternatif akan muncul di sini.</p>
+          </div>
+
+          <!-- Suggestions List -->
+          <div v-else class="space-y-3">
+            <div
+              v-for="(title, idx) in suggestions"
+              :key="idx"
+              class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-outline-variant flex gap-4 items-start hover:-translate-y-0.5 transition-transform"
+            >
               <div class="w-10 h-10 rounded-lg bg-secondary-container flex items-center justify-center shrink-0">
-                <span class="material-symbols-outlined text-primary">variable_add</span>
+                <span class="material-symbols-outlined text-primary">lightbulb</span>
               </div>
-              <div>
-                <h4 class="font-bold text-primary text-label-md">Modifikasi Variabel</h4>
-                <p class="text-label-sm text-on-surface-variant mt-1">Tambahkan variabel unik seperti sentimen eksternal atau dataset spesifik untuk meningkatkan orisinalitas.</p>
-              </div>
-            </div>
-            <div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-outline-variant flex gap-4 items-start hover:-translate-y-0.5 transition-transform">
-              <div class="w-10 h-10 rounded-lg bg-secondary-container flex items-center justify-center shrink-0">
-                <span class="material-symbols-outlined text-primary">swap_horiz</span>
-              </div>
-              <div>
-                <h4 class="font-bold text-primary text-label-md">Ganti Objek Penelitian</h4>
-                <p class="text-label-sm text-on-surface-variant mt-1">Pertimbangkan untuk menerapkan metode pada industri yang berbeda atau studi kasus yang lebih spesifik.</p>
-              </div>
-            </div>
-            <div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-outline-variant flex gap-4 items-start hover:-translate-y-0.5 transition-transform">
-              <div class="w-10 h-10 rounded-lg bg-secondary-container flex items-center justify-center shrink-0">
-                <span class="material-symbols-outlined text-primary">record_voice_over</span>
-              </div>
-              <div>
-                <h4 class="font-bold text-primary text-label-md">Konsultasi Dosen</h4>
-                <p class="text-label-sm text-on-surface-variant mt-1">Diskusikan sudut pandang kebaruan (novelty) dengan dosen pembimbing Anda.</p>
+              <div class="flex-1 min-w-0">
+                <h4 class="font-bold text-primary text-label-md leading-snug">{{ title }}</h4>
+                <button
+                  @click="reSearch(title)"
+                  class="text-secondary text-label-sm mt-1 hover:underline flex items-center gap-1"
+                >
+                  <span class="material-symbols-outlined text-[14px]">search</span>
+                  Cari Judul Ini
+                </button>
               </div>
             </div>
           </div>

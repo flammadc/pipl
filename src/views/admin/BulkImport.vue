@@ -8,6 +8,8 @@ const router = useRouter()
 
 const file = ref(null)
 const fileName = ref('')
+const zipFile = ref(null)
+const zipFileName = ref('')
 const isUploading = ref(false)
 const errorMessage = ref('')
 const result = ref(null)
@@ -33,11 +35,35 @@ function handleDrop(e) {
   }
 }
 
+function handleZipSelect(e) {
+  const selected = e.target.files?.[0]
+  if (selected) {
+    zipFile.value = selected
+    zipFileName.value = selected.name
+    errorMessage.value = ''
+  }
+}
+
+function handleZipDrop(e) {
+  e.preventDefault()
+  const dropped = e.dataTransfer?.files?.[0]
+  if (dropped) {
+    zipFile.value = dropped
+    zipFileName.value = dropped.name
+    errorMessage.value = ''
+  }
+}
+
 function clearFile() {
   file.value = null
   fileName.value = ''
   result.value = null
   errorMessage.value = ''
+}
+
+function clearZipFile() {
+  zipFile.value = null
+  zipFileName.value = ''
 }
 
 function downloadTemplate() {
@@ -46,7 +72,7 @@ function downloadTemplate() {
 
 async function submitImport() {
   if (!file.value) {
-    errorMessage.value = 'Pilih file CSV atau XLSX terlebih dahulu.'
+    errorMessage.value = 'Pilih file metadata CSV atau XLSX terlebih dahulu.'
     return
   }
 
@@ -56,7 +82,10 @@ async function submitImport() {
 
   try {
     const formData = new FormData()
-    formData.append('file', file.value)
+    formData.append('metadata', file.value)
+    if (zipFile.value) {
+      formData.append('files', zipFile.value)
+    }
     const data = await postForm('/api/admin/theses/bulk-import', formData)
     result.value = data
   } catch (e) {
@@ -72,7 +101,7 @@ function goBack() {
 </script>
 
 <template>
-  <AdminTopbar title="Tambah Skripsi Massal" :show-tabs="true" :show-back-button="true" />
+  <AdminTopbar title="Tambah Skripsi Massal" :show-tabs="true" :show-back-button="true" :back-to="{ name: 'admin-dashboard' }" />
 
   <div class="flex-grow p-margin-desktop overflow-y-auto">
     <div class="max-w-5xl mx-auto w-full">
@@ -104,7 +133,7 @@ function goBack() {
             </div>
             <p class="text-on-surface-variant font-body-md max-w-xl">
               Gunakan template CSV/XLSX untuk memastikan format data benar. Kolom wajib:
-              <strong>title</strong>, plus kolom opsional: abstract, author, advisor, year, keywords, file_url.
+              <strong>title</strong>, plus kolom opsional: abstract, author, advisor, year, keywords, filename.
             </p>
           </div>
           <button
@@ -121,7 +150,7 @@ function goBack() {
         <section class="flex flex-col gap-stack-lg">
           <div class="flex items-center gap-3">
             <span class="w-8 h-8 flex items-center justify-center bg-primary-fixed text-primary font-label-md rounded-full text-label-md">2</span>
-            <h3 class="font-label-md text-label-md text-primary">Unggah File CSV / XLSX</h3>
+            <h3 class="font-label-md text-label-md text-primary">Unggah Metadata CSV / XLSX</h3>
           </div>
 
           <div
@@ -161,10 +190,58 @@ function goBack() {
         </section>
         <hr class="border-surface-container" />
 
-        <!-- STEP 3: Hasil Import -->
-        <section v-if="result" class="flex flex-col gap-stack-lg">
+        <!-- STEP 3: Unggah ZIP File PDF (Opsional) -->
+        <section class="flex flex-col gap-stack-lg">
           <div class="flex items-center gap-3">
             <span class="w-8 h-8 flex items-center justify-center bg-primary-fixed text-primary font-label-md rounded-full text-label-md">3</span>
+            <h3 class="font-label-md text-label-md text-primary">Unggah File ZIP PDF (Opsional)</h3>
+          </div>
+
+          <div
+            v-if="!zipFile"
+            @drop="handleZipDrop"
+            @dragover.prevent
+            class="border-2 border-dashed border-outline-variant rounded-xl p-10 flex flex-col items-center justify-center bg-surface-container-low hover:bg-surface-container hover:border-primary hover:bg-primary-fixed/10 transition-all cursor-pointer group relative overflow-hidden"
+          >
+            <input type="file" accept=".zip" class="absolute inset-0 opacity-0 cursor-pointer z-10" @change="handleZipSelect" />
+            <div class="w-14 h-14 bg-primary-fixed-dim rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <span class="material-symbols-outlined text-primary text-3xl" data-icon="folder_zip">folder_zip</span>
+            </div>
+            <p class="font-label-md text-label-md text-primary mb-1 text-center">
+              Seret file ZIP berisi PDF atau <span class="underline">klik untuk unggah</span>
+            </p>
+            <p class="text-on-surface-variant font-label-md text-label-md">Maksimal 50 MB</p>
+          </div>
+
+          <!-- Selected ZIP File -->
+          <div v-else class="flex items-center justify-between p-4 bg-surface-container-low rounded-xl border border-outline-variant/30">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-secondary-container/20 rounded flex items-center justify-center">
+                <span class="material-symbols-outlined text-secondary" data-icon="folder_zip">folder_zip</span>
+              </div>
+              <div>
+                <p class="font-label-md text-label-md text-on-surface font-bold">{{ zipFileName }}</p>
+                <p class="text-on-surface-variant text-[12px]">Siap untuk dipasangkan dengan metadata</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="material-symbols-outlined text-green-600" data-icon="check_circle">check_circle</span>
+              <button @click="clearZipFile" class="p-1 hover:bg-error-container/20 rounded-full text-error transition-colors z-20">
+                <span class="material-symbols-outlined text-xl" data-icon="close">close</span>
+              </button>
+            </div>
+          </div>
+
+          <p class="text-on-surface-variant font-body-md">
+            Jika tersedia, setiap baris metadata yang memiliki kolom <strong>filename</strong> akan dicocokkan dengan nama file PDF di dalam ZIP. Baris tanpa file PDF yang cocok tetap akan diimpor.
+          </p>
+        </section>
+        <hr class="border-surface-container" />
+
+        <!-- STEP 4: Hasil Import -->
+        <section v-if="result" class="flex flex-col gap-stack-lg">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 flex items-center justify-center bg-primary-fixed text-primary font-label-md rounded-full text-label-md">4</span>
             <h3 class="font-label-md text-label-md text-primary">Hasil Impor</h3>
           </div>
 

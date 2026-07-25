@@ -2,7 +2,7 @@
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminTopbar from '@/components/admin/topbar.vue'
-import { post } from '@/services/api'
+import { postForm } from '@/services/api'
 
 const router = useRouter()
 
@@ -17,7 +17,7 @@ const form = reactive({
   advisor: '',
   year: '',
   keywords: '',
-  file_url: '',
+  file: null,
 })
 
 const errors = reactive({
@@ -32,7 +32,7 @@ function resetForm() {
   form.advisor = ''
   form.year = ''
   form.keywords = ''
-  form.file_url = ''
+  form.file = null
   errors.title = ''
   errors.year = ''
   errorMessage.value = ''
@@ -64,17 +64,16 @@ async function submitForm() {
   isSaved.value = false
 
   try {
-    const payload = {
-      title: form.title.trim(),
-      abstract: form.abstract.trim() || null,
-      author: form.author.trim() || null,
-      advisor: form.advisor.trim() || null,
-      year: form.year ? parseInt(form.year, 10) : null,
-      keywords: form.keywords.trim() || null,
-      file_url: form.file_url.trim() || null,
-    }
+    const formData = new FormData()
+    formData.append('title', form.title.trim())
+    if (form.abstract.trim()) formData.append('abstract', form.abstract.trim())
+    if (form.author.trim()) formData.append('author', form.author.trim())
+    if (form.advisor.trim()) formData.append('advisor', form.advisor.trim())
+    if (form.year) formData.append('year', parseInt(form.year, 10))
+    if (form.keywords.trim()) formData.append('keywords', form.keywords.trim())
+    if (form.file) formData.append('file', form.file)
 
-    await post('/api/admin/theses', payload)
+    await postForm('/api/admin/theses', formData)
     isSaved.value = true
     setTimeout(() => {
       isSaved.value = false
@@ -88,12 +87,12 @@ async function submitForm() {
 }
 
 function goBack() {
-  router.back()
+  router.push({ name: 'admin-dashboard' })
 }
 </script>
 
 <template>
-  <AdminTopbar title="Tambah Skripsi Baru" :show-tabs="true" :show-back-button="true" />
+  <AdminTopbar title="Tambah Skripsi Baru" :show-tabs="true" :show-back-button="true" :back-to="{ name: 'admin-dashboard' }" />
 
   <div class="flex-grow p-margin-desktop overflow-y-auto">
     <div class="max-w-5xl mx-auto">
@@ -188,17 +187,17 @@ function goBack() {
             </div>
           </div>
 
-          <!-- File URL -->
+          <!-- File PDF -->
           <div class="space-y-stack-sm">
-            <label class="font-label-md text-label-md text-primary font-semibold">Link File Skripsi</label>
+            <label class="font-label-md text-label-md text-primary font-semibold">File PDF Skripsi</label>
             <input
-              v-model="form.file_url"
-              class="w-full h-12 px-4 rounded-lg border border-outline-variant focus:border-secondary focus:ring-1 focus:ring-secondary/20 outline-none transition-all font-body-md text-body-md"
-              placeholder="https://repository.unikom.ac.id/.../namafile.pdf"
-              type="url"
+              type="file"
+              accept=".pdf"
+              @change="(e) => { form.file = e.target.files?.[0] || null }"
+              class="block w-full text-body-md text-on-surface file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary file:text-on-primary hover:file:bg-primary-container cursor-pointer"
             />
             <p class="text-on-surface-variant text-label-sm">
-              Masukkan link langsung ke file PDF (misal dari Repositori UNIKOM, Google Drive, dsb.).
+              Unggah file PDF skripsi (opsional). Ukuran maksimal 10 MB. File akan tersimpan di server dan dapat diakses publik.
             </p>
           </div>
 

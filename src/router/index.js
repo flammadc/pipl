@@ -59,6 +59,18 @@ const router = createRouter({
       component: () => import('../views/admin/Users.vue'),
       meta: { requiresAuth: true, requiresRole: ['admin'] },
     },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: () => import('../views/shared/Profile.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/admin/profile',
+      name: 'admin-profile',
+      component: () => import('../views/shared/Profile.vue'),
+      meta: { requiresAuth: true, requiresRole: ['admin'] },
+    },
   ],
 })
 

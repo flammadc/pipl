@@ -1,7 +1,7 @@
 /**
  * Centralized API service layer.
  * Automatically injects Authorization: Bearer <token> when available.
- * All requests go through Vite proxy → http://localhost:3000
+ * All requests go through Vite proxy → http://localhost:3001
  */
 
 function getToken() {
@@ -45,6 +45,15 @@ export async function post(path, body = {}) {
 export async function patch(path, body = {}) {
   const res = await fetch(path, {
     method: 'PATCH',
+    headers: buildHeaders(),
+    body: JSON.stringify(body),
+  })
+  return handleResponse(res)
+}
+
+export async function put(path, body = {}) {
+  const res = await fetch(path, {
+    method: 'PUT',
     headers: buildHeaders(),
     body: JSON.stringify(body),
   })

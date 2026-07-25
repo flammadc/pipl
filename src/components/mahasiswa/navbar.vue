@@ -64,6 +64,12 @@ onUnmounted(() => {
         
         <!-- Dropdown Menu -->
         <div v-if="isDropdownOpen" class="absolute right-0 mt-2 w-48 bg-surface-container-lowest border border-surface-variant rounded-xl shadow-md overflow-hidden z-50">
+          <router-link @click="isDropdownOpen = false" to="/profile" class="block w-full text-left px-4 py-3 text-label-md text-on-surface hover:bg-surface-container-low transition-colors border-b border-surface-variant">
+            <span class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[20px]">person</span>
+              Profile
+            </span>
+          </router-link>
           <router-link @click="isDropdownOpen = false" to="/history" class="block w-full text-left px-4 py-3 text-label-md text-on-surface hover:bg-surface-container-low transition-colors border-b border-surface-variant">
             <span class="flex items-center gap-2">
               <span class="material-symbols-outlined text-[20px]">history</span>
