@@ -39,19 +39,25 @@ const router = createRouter({
       path: '/admin',
       name: 'admin-dashboard',
       component: AdminDashboard,
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, requiresRole: ['admin'] },
     },
     {
       path: '/admin/add',
       name: 'admin-add',
       component: () => import('../views/admin/AddThesis.vue'),
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, requiresRole: ['admin'] },
     },
     {
       path: '/admin/bulk',
       name: 'admin-bulk',
       component: () => import('../views/admin/BulkImport.vue'),
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, requiresRole: ['admin'] },
+    },
+    {
+      path: '/admin/users',
+      name: 'admin-users',
+      component: () => import('../views/admin/Users.vue'),
+      meta: { requiresAuth: true, requiresRole: ['admin'] },
     },
   ],
 })
@@ -61,8 +67,11 @@ router.beforeEach((to, _from, next) => {
   if (to.meta.requiresAuth && !auth.isLoggedIn) {
     return next({ name: 'login', query: { redirect: to.fullPath } })
   }
-  if (to.name === 'login' && auth.isLoggedIn) {
+  if (to.meta.requiresRole && !to.meta.requiresRole.includes(auth.user?.role)) {
     return next({ name: 'mahasiswa-dashboard' })
+  }
+  if (to.name === 'login' && auth.isLoggedIn) {
+    return next(auth.isAdmin ? { name: 'admin-dashboard' } : { name: 'mahasiswa-dashboard' })
   }
   next()
 })

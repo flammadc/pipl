@@ -18,8 +18,14 @@ const togglePassword = () => {
 const handleLogin = async () => {
   const ok = await authStore.login(email.value, password.value)
   if (ok) {
-    const redirect = route.query.redirect || '/'
-    router.push(redirect)
+    const redirect = route.query.redirect
+    if (redirect && typeof redirect === 'string') {
+      router.push(redirect)
+    } else if (authStore.isAdmin) {
+      router.push({ name: 'admin-dashboard' })
+    } else {
+      router.push({ name: 'mahasiswa-dashboard' })
+    }
   }
 }
 </script>

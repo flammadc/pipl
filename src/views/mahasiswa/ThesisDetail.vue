@@ -17,9 +17,17 @@ const goBack = () => {
   router.back()
 }
 
-// Derive PDF proxy URL
+const isManual = computed(() => record.value?.source === 'manual')
+
+// Derive PDF/URL
 const pdfProxyUrl = computed(() => {
   if (!id) return null
+  if (record.value?.source === 'manual') {
+    const url = record.value?.file_url || record.value?.uri || null
+    // Hanya langsung tampilkan di iframe jika ekstensi PDF
+    if (url && /\.pdf(\?|$)/i.test(url)) return url
+    return null
+  }
   return `/api/record/${id}/pdf`
 })
 
@@ -37,7 +45,7 @@ onMounted(async () => {
     ])
     record.value = rec
     files.value = fileData.files || []
-    // Set PDF URL
+    // Set PDF URL setelah record tersedia
     pdfUrl.value = pdfProxyUrl.value
   } catch (e) {
     error.value = e.message || 'Gagal mengambil detail skripsi.'
@@ -55,6 +63,11 @@ function formatCreators(creators) {
 function formatSubjects(subjects) {
   if (!subjects || !subjects.length) return []
   return Array.isArray(subjects) ? subjects : [String(subjects)]
+}
+
+function fileHref(file) {
+  if (isManual.value) return file
+  return `/api/pdf?url=${encodeURIComponent(file)}`
 }
 </script>
 
@@ -127,7 +140,7 @@ function formatSubjects(subjects) {
             <a
               v-for="(file, idx) in files"
               :key="idx"
-              :href="`/api/pdf?url=${encodeURIComponent(file)}`"
+              :href="fileHref(file)"
               target="_blank"
               class="flex-shrink-0 px-3 py-1.5 bg-white border border-surface-variant rounded-lg text-label-sm text-primary hover:border-primary transition-colors"
             >
@@ -205,7 +218,7 @@ function formatSubjects(subjects) {
             class="w-full border-2 border-secondary text-secondary h-[52px] rounded-xl font-bold flex items-center justify-center gap-stack-sm hover:bg-secondary-fixed transition-all active:scale-[0.98]"
           >
             <span class="material-symbols-outlined">open_in_new</span>
-            Buka di Repositori
+            {{ isManual ? 'Buka Link File' : 'Buka di Repositori' }}
           </a>
         </div>
       </div>

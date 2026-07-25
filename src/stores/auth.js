@@ -9,6 +9,7 @@ export const useAuthStore = defineStore('auth', () => {
   const isLoading = ref(false)
 
   const isLoggedIn = computed(() => !!token.value)
+  const isAdmin = computed(() => user.value?.role === 'admin')
 
   function _persist(t, u) {
     token.value = t
@@ -68,5 +69,5 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  return { token, user, error, isLoading, isLoggedIn, login, register, logout, fetchMe }
+  return { token, user, error, isLoading, isLoggedIn, isAdmin, login, register, logout, fetchMe }
 })
