@@ -6,15 +6,21 @@ import { get } from '@/services/api'
 const showBars = ref(false)
 const trends = ref(null)
 const records = ref([])
+const adminStats = ref(null)
 const isLoadingTrends = ref(true)
 const isLoadingRecords = ref(true)
+const isLoadingStats = ref(true)
 const tableSearch = ref('')
 const searchTimeout = ref(null)
+const statsError = ref(null)
 
 // Stats derived from trends
-const totalSkripsi = computed(() => trends.value?.total || 0)
+const totalSkripsi = computed(() => adminStats.value?.totalTheses ?? trends.value?.total ?? 0)
 const totalKlaster = computed(() => trends.value?.clusters?.length || 0)
 const jenuhCount = computed(() => trends.value?.clusters?.filter(c => c.saturated)?.length || 0)
+const totalManualEntries = computed(() => adminStats.value?.totalManualEntries || 0)
+const totalUsers = computed(() => adminStats.value?.totalUsers || 0)
+const totalAdmins = computed(() => adminStats.value?.totalAdmins || 0)
 
 // Top clusters sorted by count
 const topClusters = computed(() => {
@@ -58,6 +64,19 @@ async function loadRecords(q = '') {
   }
 }
 
+async function loadStats() {
+  isLoadingStats.value = true
+  statsError.value = null
+  try {
+    adminStats.value = await get('/api/admin/stats')
+  } catch (e) {
+    console.error('Gagal load stats:', e.message)
+    statsError.value = e.message
+  } finally {
+    isLoadingStats.value = false
+  }
+}
+
 watch(tableSearch, (val) => {
   clearTimeout(searchTimeout.value)
   searchTimeout.value = setTimeout(() => loadRecords(val), 500)
@@ -66,6 +85,7 @@ watch(tableSearch, (val) => {
 onMounted(() => {
   loadTrends()
   loadRecords()
+  loadStats()
 })
 </script>
 
@@ -139,6 +159,58 @@ onMounted(() => {
             <span v-else>{{ jenuhCount }}</span>
           </h4>
           <p class="font-label-md text-label-md text-on-surface-variant/70">Klaster Jenuh</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Error Banner -->
+    <div v-if="statsError" class="bg-error-container text-on-error-container p-4 rounded-xl flex items-center gap-3">
+      <span class="material-symbols-outlined">error</span>
+      <span>Gagal memuat statistik admin: {{ statsError }}</span>
+    </div>
+
+    <!-- Admin Stats Row -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- Stat Card 5: Total User -->
+      <div class="bg-white p-6 rounded-xl shadow-[0px_2px_4px_rgba(31,56,100,0.05)] border border-primary/5 hover:shadow-[0px_12px_24px_rgba(31,56,100,0.08)] transition-all flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <span class="material-symbols-outlined text-primary bg-primary/5 p-2 rounded-lg">group</span>
+          <span class="text-xs font-bold text-secondary bg-secondary/5 px-2 py-1 rounded-full">Admin</span>
+        </div>
+        <div class="mt-4">
+          <h4 class="text-[28px] font-bold text-primary tracking-tight">
+            <span v-if="isLoadingStats" class="inline-block w-20 h-8 bg-surface-container-low rounded animate-pulse"></span>
+            <span v-else>{{ totalUsers.toLocaleString('id-ID') }}</span>
+          </h4>
+          <p class="font-label-md text-label-md text-on-surface-variant/70">Total User Terdaftar</p>
+        </div>
+      </div>
+      <!-- Stat Card 6: Entri Manual -->
+      <div class="bg-white p-6 rounded-xl shadow-[0px_2px_4px_rgba(31,56,100,0.05)] border border-primary/5 hover:shadow-[0px_12px_24px_rgba(31,56,100,0.08)] transition-all flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <span class="material-symbols-outlined text-[#2E5395] bg-[#2E5395]/10 p-2 rounded-lg">edit_note</span>
+          <span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">Manual</span>
+        </div>
+        <div class="mt-4">
+          <h4 class="text-[28px] font-bold text-primary tracking-tight">
+            <span v-if="isLoadingStats" class="inline-block w-16 h-8 bg-surface-container-low rounded animate-pulse"></span>
+            <span v-else>{{ totalManualEntries.toLocaleString('id-ID') }}</span>
+          </h4>
+          <p class="font-label-md text-label-md text-on-surface-variant/70">Entri Manual Admin</p>
+        </div>
+      </div>
+      <!-- Stat Card 7: Total Admin -->
+      <div class="bg-white p-6 rounded-xl shadow-[0px_2px_4px_rgba(31,56,100,0.05)] border border-primary/5 hover:shadow-[0px_12px_24px_rgba(31,56,100,0.08)] transition-all flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <span class="material-symbols-outlined text-[#C77700] bg-orange-50 p-2 rounded-lg">shield_person</span>
+          <span class="text-xs font-bold text-[#C77700] bg-orange-50 px-2 py-1 rounded-full">Role</span>
+        </div>
+        <div class="mt-4">
+          <h4 class="text-[28px] font-bold text-[#C77700] tracking-tight">
+            <span v-if="isLoadingStats" class="inline-block w-12 h-8 bg-surface-container-low rounded animate-pulse"></span>
+            <span v-else>{{ totalAdmins }}</span>
+          </h4>
+          <p class="font-label-md text-label-md text-on-surface-variant/70">Total Admin</p>
         </div>
       </div>
     </div>
@@ -256,6 +328,7 @@ onMounted(() => {
               <th class="px-6 py-4 font-bold text-primary text-sm">Penulis</th>
               <th class="px-6 py-4 font-bold text-primary text-sm">Tahun</th>
               <th class="px-6 py-4 font-bold text-primary text-sm">Tipe</th>
+              <th class="px-6 py-4 font-bold text-primary text-sm">Sumber</th>
               <th class="px-8 py-4 font-bold text-primary text-sm text-center">Aksi</th>
             </tr>
           </thead>
@@ -271,6 +344,14 @@ onMounted(() => {
               <td class="px-6 py-5">
                 <span class="px-3 py-1 bg-[#2E5395]/10 text-[#2E5395] rounded-full text-xs font-bold capitalize">
                   {{ rec.type || 'thesis' }}
+                </span>
+              </td>
+              <td class="px-6 py-5">
+                <span
+                  :class="rec.source === 'manual' ? 'bg-green-100 text-green-700' : 'bg-surface-container text-on-surface-variant'"
+                  class="px-3 py-1 rounded-full text-xs font-bold capitalize"
+                >
+                  {{ rec.source === 'manual' ? 'Manual' : 'EPrints' }}
                 </span>
               </td>
               <td class="px-8 py-5">
