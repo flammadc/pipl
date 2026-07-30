@@ -1,14 +1,17 @@
 <script setup>
-import { ref, reactive } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, reactive, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import AdminTopbar from '@/components/admin/topbar.vue'
-import { postForm } from '@/services/api'
+import { get, putForm } from '@/services/api'
 
 const router = useRouter()
+const route = useRoute()
 
 const isSaving = ref(false)
 const isSaved = ref(false)
+const isLoading = ref(true)
 const errorMessage = ref('')
+const thesisId = route.query.id
 
 const form = reactive({
   title: '',
@@ -30,17 +33,26 @@ const errors = reactive({
   file: '',
 })
 
-function resetForm() {
-  form.title = ''
-  form.abstract = ''
-  form.author = ''
-  form.advisor = ''
-  form.year = ''
-  form.keywords = ''
-  form.file = null
-  Object.keys(errors).forEach(k => errors[k] = '')
-  errorMessage.value = ''
-}
+onMounted(async () => {
+  if (!thesisId) {
+    errorMessage.value = 'ID skripsi tidak ditemukan.'
+    isLoading.value = false
+    return
+  }
+  try {
+    const data = await get(`/api/admin/theses/${thesisId}`)
+    form.title = data.title || ''
+    form.abstract = data.abstract || ''
+    form.author = data.author || ''
+    form.advisor = data.advisor || ''
+    form.year = data.year || ''
+    form.keywords = data.keywords || ''
+  } catch (e) {
+    errorMessage.value = 'Gagal memuat data skripsi: ' + e.message
+  } finally {
+    isLoading.value = false
+  }
+})
 
 function validate() {
   let ok = true
@@ -73,10 +85,6 @@ function validate() {
     errors.keywords = 'Kata kunci wajib diisi.'
     ok = false
   }
-  if (!form.file) {
-    errors.file = 'File PDF skripsi wajib diunggah.'
-    ok = false
-  }
 
   return ok
 }
@@ -96,16 +104,19 @@ async function submitForm() {
     formData.append('advisor', form.advisor.trim())
     formData.append('year', parseInt(form.year, 10))
     formData.append('keywords', form.keywords.trim())
-    formData.append('file', form.file)
+    if (form.file) {
+      formData.append('file', form.file)
+    }
 
-    await postForm('/api/admin/theses', formData)
+    await putForm(`/api/admin/theses/${thesisId}`, formData)
+    
     isSaved.value = true
     setTimeout(() => {
       isSaved.value = false
       router.push({ name: 'admin-dashboard' })
     }, 1500)
   } catch (e) {
-    errorMessage.value = e.message || 'Gagal menyimpan skripsi.'
+    errorMessage.value = e.message || 'Gagal memperbarui skripsi.'
   } finally {
     isSaving.value = false
   }
@@ -116,9 +127,8 @@ function goBack() {
 }
 </script>
 
-
 <template>
-  <AdminTopbar title="Tambah Skripsi Baru" :show-tabs="true" :show-back-button="true" :back-to="{ name: 'admin-dashboard' }" />
+  <AdminTopbar title="Edit Skripsi" :show-tabs="true" :show-back-button="true" :back-to="{ name: 'admin-dashboard' }" />
 
   <div class="flex-grow p-margin-desktop overflow-y-auto">
     <div class="max-w-5xl mx-auto">
@@ -138,10 +148,15 @@ function goBack() {
           class="flex items-center gap-3 px-4 py-3 bg-green-100 text-green-700 rounded-lg text-body-sm font-body-md"
         >
           <span class="material-symbols-outlined text-[18px]">check_circle</span>
-          Skripsi berhasil disimpan. Mengalihkan ke dashboard...
+          Skripsi berhasil diperbarui. Mengalihkan ke dashboard...
         </div>
 
-        <form @submit.prevent="submitForm" class="space-y-gutter">
+        <div v-if="isLoading" class="flex flex-col items-center justify-center py-24 gap-4">
+          <span class="material-symbols-outlined animate-spin text-4xl text-primary">sync</span>
+          <p class="text-body-md text-on-surface-variant">Memuat data skripsi...</p>
+        </div>
+
+        <form v-else-if="!isLoading && !errorMessage" @submit.prevent="submitForm" class="space-y-gutter">
           <!-- Title Field -->
           <div class="space-y-stack-sm">
             <label class="font-label-md text-label-md text-primary font-semibold">
@@ -236,7 +251,7 @@ function goBack() {
           <!-- File PDF -->
           <div class="space-y-stack-sm">
             <label class="font-label-md text-label-md text-primary font-semibold">
-              File PDF Skripsi <span class="text-error">*</span>
+              Ganti File PDF Skripsi <span class="text-on-surface-variant text-label-sm font-normal">(Opsional)</span>
             </label>
             <input
               type="file"
@@ -247,7 +262,7 @@ function goBack() {
             />
             <p v-if="errors.file" class="text-error text-body-sm">{{ errors.file }}</p>
             <p v-else class="text-on-surface-variant text-label-sm">
-              Unggah file PDF skripsi. Ukuran maksimal 10 MB. File akan tersimpan di server dan dapat diakses publik.
+              Biarkan kosong jika tidak ingin mengubah file PDF.
             </p>
           </div>
 
@@ -255,7 +270,7 @@ function goBack() {
           <div class="flex items-start gap-4 p-4 bg-secondary-fixed/30 rounded-xl border border-secondary-fixed-dim/20">
             <span class="material-symbols-outlined text-secondary text-2xl mt-0.5">info</span>
             <p class="font-body-md text-body-md text-on-secondary-container">
-              Data yang ditambahkan di sini akan langsung muncul di pencarian dan tren yang dilihat mahasiswa.
+              Perubahan pada data ini akan langsung mengubah hasil pencarian. File PDF yang lama tetap digunakan.
             </p>
           </div>
 
@@ -276,7 +291,7 @@ function goBack() {
             >
               <span v-if="isSaving" class="material-symbols-outlined animate-spin text-[18px]">sync</span>
               <span v-if="isSaved" class="material-symbols-outlined text-[18px]">check_circle</span>
-              {{ isSaving ? 'Menyimpan...' : (isSaved ? 'Berhasil Disimpan' : 'Simpan Skripsi') }}
+              {{ isSaving ? 'Menyimpan...' : (isSaved ? 'Berhasil Diperbarui' : 'Simpan Perubahan') }}
             </button>
           </div>
         </form>
@@ -284,4 +299,3 @@ function goBack() {
     </div>
   </div>
 </template>
-

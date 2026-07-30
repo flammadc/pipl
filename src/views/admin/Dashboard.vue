@@ -1,7 +1,8 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import AdminTopbar from '@/components/admin/topbar.vue'
-import { get } from '@/services/api'
+import { get, del } from '@/services/api'
+import { useRouter } from 'vue-router'
 
 const showBars = ref(false)
 const trends = ref(null)
@@ -13,6 +14,8 @@ const isLoadingStats = ref(true)
 const tableSearch = ref('')
 const searchTimeout = ref(null)
 const statsError = ref(null)
+const router = useRouter()
+const deletingId = ref(null)
 
 // Stats derived from trends
 const totalSkripsi = computed(() => adminStats.value?.totalTheses ?? trends.value?.total ?? 0)
@@ -50,13 +53,16 @@ async function loadTrends() {
 async function loadRecords(q = '') {
   isLoadingRecords.value = true
   try {
-    if (q.trim()) {
-      const data = await get('/api/search', { q: q.trim(), limit: 20 })
-      records.value = data.results || []
-    } else {
-      const data = await get('/api/records')
-      records.value = (data.records || []).slice(0, 20)
-    }
+    // Load only manually-added theses (controlled by admin) — no EPrints data here
+    const data = await get('/api/admin/theses', { q: q.trim(), limit: 50 })
+    // Map DB rows to display shape
+    records.value = (data.results || []).map(r => ({
+      ...r,
+      eprintid: `manual-${r.id}`,
+      creators: r.author ? [r.author] : [],
+      source: 'manual',
+      type: 'thesis',
+    }))
   } catch (e) {
     console.error('Gagal load records:', e.message)
   } finally {
@@ -74,6 +80,19 @@ async function loadStats() {
     statsError.value = e.message
   } finally {
     isLoadingStats.value = false
+  }
+}
+
+async function deleteRecord(id) {
+  if (!confirm('Hapus skripsi ini?')) return
+  deletingId.value = id
+  try {
+    await del(`/api/admin/theses/${id}`)
+    records.value = records.value.filter(r => r.id !== id)
+  } catch (e) {
+    alert('Gagal menghapus: ' + (e.message || 'Terjadi kesalahan.'))
+  } finally {
+    deletingId.value = null
   }
 }
 
@@ -363,6 +382,24 @@ onMounted(() => {
                   >
                     <span class="material-symbols-outlined text-[18px]">visibility</span>
                   </router-link>
+                  <router-link
+                    v-if="rec.source === 'manual'"
+                    :to="{ path: '/admin/edit', query: { id: rec.id } }"
+                    class="p-2 text-secondary hover:bg-secondary hover:text-white rounded-lg transition-all"
+                    title="Edit Skripsi"
+                  >
+                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                  </router-link>
+                  <button
+                    v-if="rec.source === 'manual'"
+                    class="p-2 text-error hover:bg-error hover:text-white rounded-lg transition-all"
+                    title="Hapus Skripsi"
+                    @click="deleteRecord(rec.id)"
+                    :disabled="deletingId === rec.id"
+                  >
+                    <span v-if="deletingId === rec.id" class="material-symbols-outlined text-[18px] animate-spin">sync</span>
+                    <span v-else class="material-symbols-outlined text-[18px]">delete</span>
+                  </button>
                 </div>
               </td>
             </tr>

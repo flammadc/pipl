@@ -81,6 +81,19 @@ export async function postForm(path, formData) {
   return handleResponse(res)
 }
 
+export async function putForm(path, formData) {
+  const headers = {}
+  const token = getToken()
+  if (token) headers['Authorization'] = `Bearer ${token}`
+
+  const res = await fetch(path, {
+    method: 'PUT',
+    headers,
+    body: formData,
+  })
+  return handleResponse(res)
+}
+
 export async function getFile(path, params = {}, filename = 'download') {
   const url = new URL(path, window.location.origin)
   Object.entries(params).forEach(([k, v]) => {

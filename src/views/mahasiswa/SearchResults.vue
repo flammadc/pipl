@@ -10,9 +10,11 @@ const searchStore = useSearchStore()
 
 const searchQuery = ref(route.query.q || '')
 const localError = ref(null)
-const suggestions = ref([])
 const loadingSuggestions = ref(false)
 const suggestionsError = ref(null)
+
+// suggestions live in the store so they survive navigation and page refresh
+const suggestions = computed(() => searchStore.suggestions)
 
 // Similarity score → label
 const scoreLabel = computed(() => {
@@ -35,7 +37,8 @@ async function loadSuggestions(idea) {
   suggestionsError.value = null
   try {
     const data = await post('/api/suggest-titles', { idea: idea.trim() })
-    suggestions.value = data.suggestions || []
+    // Persist to store so suggestions survive navigation and refresh
+    searchStore.setSuggestions(data.suggestions || [])
   } catch (e) {
     suggestionsError.value = e.message || 'Gagal memuat saran judul.'
   } finally {
@@ -50,7 +53,10 @@ async function runSearch(q) {
   if (!result) {
     localError.value = searchStore.error || 'Gagal mengambil data dari server.'
   } else {
-    await loadSuggestions(q.trim())
+    // Only fetch suggestions if not already cached for this query
+    if (!searchStore.suggestions.length) {
+      await loadSuggestions(q.trim())
+    }
   }
 }
 
@@ -63,14 +69,17 @@ function reSearch(idea) {
   router.push({ path: '/results', query: { q: idea } })
 }
 
-// On mount: if no result yet (fresh navigation), trigger API call
+// On mount: use cached data if the idea matches; otherwise call the API
 onMounted(() => {
-  if (!searchStore.result || searchStore.idea !== searchQuery.value) {
-    runSearch(searchQuery.value)
+  const q = searchQuery.value
+  if (searchStore.result && searchStore.idea === q) {
+    // Data already in store (back-navigation or page refresh) — no API call needed
+    return
   }
+  runSearch(q)
 })
 
-// If query param changes (from clicking a suggestion title "Cari Judul Ini")
+// If query param changes (e.g., clicking "Cari Judul Ini" from a suggestion)
 watch(() => route.query.q, (newQ) => {
   if (newQ && newQ !== searchStore.idea) {
     searchQuery.value = newQ

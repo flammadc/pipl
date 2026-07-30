@@ -48,6 +48,12 @@ const router = createRouter({
       meta: { requiresAuth: true, requiresRole: ['admin'] },
     },
     {
+      path: '/admin/edit',
+      name: 'admin-edit',
+      component: () => import('../views/admin/EditThesis.vue'),
+      meta: { requiresAuth: true, requiresRole: ['admin'] },
+    },
+    {
       path: '/admin/bulk',
       name: 'admin-bulk',
       component: () => import('../views/admin/BulkImport.vue'),
