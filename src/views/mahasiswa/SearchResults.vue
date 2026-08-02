@@ -1,8 +1,10 @@
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onActivated, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useSearchStore } from '@/stores/search'
 import { post } from '@/services/api'
+
+defineOptions({ name: 'SearchResults' })
 
 const route = useRoute()
 const router = useRouter()
@@ -69,22 +71,25 @@ function reSearch(idea) {
   router.push({ path: '/results', query: { q: idea } })
 }
 
-// On mount: use cached data if the idea matches; otherwise call the API
-onMounted(() => {
-  const q = searchQuery.value
+// On activate: use cached data if the idea matches; otherwise call the API.
+// onActivated fires both on first mount AND when navigating back (KeepAlive re-activation).
+onActivated(() => {
+  const q = route.query.q || ''
+  searchQuery.value = q
   if (searchStore.result && searchStore.idea === q) {
-    // Data already in store (back-navigation or page refresh) — no API call needed
+    // Data already in store — no API call needed
     return
   }
   runSearch(q)
 })
 
-// If query param changes (e.g., clicking "Cari Judul Ini" from a suggestion)
+// If query param changes (e.g., clicking "Cari Judul Ini" from a suggestion).
+// Guard: if the store already has a result for this query (back-nav), skip the API call.
 watch(() => route.query.q, (newQ) => {
-  if (newQ && newQ !== searchStore.idea) {
-    searchQuery.value = newQ
-    runSearch(newQ)
-  }
+  if (!newQ) return
+  if (searchStore.result && searchStore.idea === newQ) return
+  searchQuery.value = newQ
+  runSearch(newQ)
 })
 </script>
 

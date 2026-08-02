@@ -31,6 +31,10 @@ const layout = computed(() => {
 
 <template>
   <component :is="layout">
-    <RouterView />
+    <RouterView v-slot="{ Component }">
+      <KeepAlive include="SearchResults">
+        <component :is="Component" />
+      </KeepAlive>
+    </RouterView>
   </component>
 </template>
