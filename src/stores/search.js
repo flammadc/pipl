@@ -36,13 +36,13 @@ export const useSearchStore = defineStore('search', () => {
     isLoading.value = true
     error.value = null
     idea.value = ideaText
-    result.value = null
-    suggestions.value = []
-    saveToStorage(ideaText, null, [])
+    // Don't wipe result/suggestions eagerly — keep showing stale data while loading
+    // so back-navigation guards can still see the previous result during the request.
     try {
       const data = await post('/api/check-idea', { idea: ideaText })
       result.value = data
-      saveToStorage(ideaText, data, suggestions.value)
+      suggestions.value = []
+      saveToStorage(ideaText, data, [])
       return data
     } catch (e) {
       error.value = e.message
